@@ -1,4 +1,4 @@
-name: plotly_dashboard_template # Replace with your dashboard name
+name: hrsds_prototype # Replace with your dashboard name
 channels:
   - conda-forge
   - nodefaults

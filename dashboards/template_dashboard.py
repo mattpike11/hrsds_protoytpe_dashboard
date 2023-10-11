@@ -21,18 +21,26 @@ from app import app
 
 from figures.bar_chart import bar_chart
 
-data = {
-    "Category": ["Category 1", "Category 2", "Category 3"],
-    "Value": [30, 15, 20],
-}
-df = pd.DataFrame(data)
 
-
-def template_dashboard(example_dropdown="option 1"):
+def template_dashboard(example_dropdown):
     """Create and return the dashboard layout for display in the application."""
+    if example_dropdown is None:
+        example_dropdown = "GENDER"
 
-    barchart = bar_chart(df, "Category", "Value", color="Category")
-    barchart_dash = graph(element_id="example bar chart", figure=barchart)
+    # Read dummy data from local file into a data frame
+    df = (
+        pd.read_csv("data\example_data.csv")
+        .groupby(example_dropdown)["PERSON_ID"]
+        .count()
+        .reset_index()
+    )
+
+    # Produce a bar chart from the data frame
+    barchart = bar_chart(df, example_dropdown, "PERSON_ID", color=example_dropdown)
+    barchart_dash = graph(
+        element_id="example_bar_chart",
+        figure=barchart,
+    )
     dashboard_content = [card(barchart_dash)]
 
     return main_content(
@@ -44,13 +52,13 @@ def template_dashboard(example_dropdown="option 1"):
                         id="example_dropdown",
                         source=[
                             {"label": metric, "value": metric}
-                            for metric in ["option 1", "option 2"]
+                            for metric in ["GENDER", "OUTCOME"]
                         ],
                         value=example_dropdown,
                     ),
                 ],
             ),
-            format_visualisation_title("Visualisation title"),
+            format_visualisation_title("My example graph"),
             html.Div(
                 id="example_commentary",
             ),
@@ -59,10 +67,27 @@ def template_dashboard(example_dropdown="option 1"):
     )
 
 
+# Write a callback function to update both the commentary and the bar chart
 @app.callback(
     Output(component_id="example_commentary", component_property="children"),
+    Output(component_id="example_bar_chart", component_property="figure"),
     Input(component_id="example_dropdown", component_property="value"),
 )
-def update_example_commentary(example_dropdown):
+def update_example_commentary_and_barchart(example_dropdown):
     """Example of how to update commentary with selected option."""
-    return format_visualisation_commentary(f"{example_dropdown} selected.")
+    # Create a new data frame with the updated dropdown selection
+    updated_df = (
+        pd.read_csv("data\example_data.csv")
+        .groupby(example_dropdown)["PERSON_ID"]
+        .count()
+        .reset_index()
+    )
+    # Create a new bar chart with updated data frame
+    updated_barchart = bar_chart(
+        updated_df, example_dropdown, "PERSON_ID", color=example_dropdown
+    )
+
+    return (
+        format_visualisation_commentary(f"{example_dropdown} selected."),
+        updated_barchart,
+    )
