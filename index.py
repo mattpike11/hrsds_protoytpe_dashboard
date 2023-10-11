@@ -15,6 +15,7 @@ from gov_uk_dashboards.components.plotly.side_navbar import side_navbar
 from app import app
 from components.header import header
 from dashboards.template_dashboard import template_dashboard
+from dashboards.template_dashboard_time import template_dashboard_time
 from lib.dashboard_page import DashboardPage
 from lib.dashboard_storage_and_lookup import DashboardStorageAndLookup
 from lib.generate_navbar import generate_side_navbar
@@ -68,6 +69,12 @@ dashboards.add_dashboards(
             pathname="/dashboard-1",
             function_to_call=template_dashboard,
             filters=["example_dropdown"],
+        ),
+        DashboardPage(
+            title="Dashboard 2",
+            pathname="/dashboard-2",
+            function_to_call=template_dashboard_time,
+            filters=["example_dropdown_time"],
         )
     ]
 )
