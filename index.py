@@ -53,7 +53,9 @@ app.layout = html.Div(
             className="govuk-width-container",
             **{"aria-live": "polite", "aria-atomic": "true"},
         ),
-        footer([dcc.Link("Accessibility statement", href="#")]), # TODO update href with real page
+        footer(
+            [dcc.Link("Accessibility statement", href="#")]
+        ),  # TODO update href with real page
         # url
     ]
 )
